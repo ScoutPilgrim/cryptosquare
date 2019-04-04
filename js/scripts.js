@@ -1,11 +1,13 @@
 
 let answerStr = '';
+let normalStr = '';
 const regEx = /[.,\/#!$%\^&\*;:{}='"\-_`~()\]\[\?]/g;
 
 function clearArrays(){
   console.log('Clearing out strings!');
   inputStr = [];
   answerStr = '';
+  normalStr = '';
 };
 
 function generateSquare(myLength, myStr){
@@ -27,6 +29,9 @@ function generateSquare(myLength, myStr){
   printArray(col, row);
   answerStr = cryptoLogic(col, row, mySquare);
   console.log(answerStr);
+  normalStr = answerStr.replace(/\s/g,"");
+  normalStr = normalizeText(normalStr, col, row);
+  console.log('Text turned back into: ' +normalStr);
   return answerStr;
 };
 
@@ -72,7 +77,7 @@ function initArray(myCol, myRow,  myStr){
         break;
       }
       innerArr.push(myStr[i]);
-      console.log('Adding ' + myStr[i] + ' at (' +i+ ',' +j+ ')');
+      console.log('Adding ' + myStr[i] + ' at (' +j+ ',' +i+ ')');
     }
     myStr = myStr.substring(innerArr.length);
     retArr.push(innerArr);
@@ -86,9 +91,6 @@ function cryptoLogic(myCol, myRow, myArr){
   var secondBr = false;
   var iter = 0;
   for(var col = 0; col < myCol; col++) {
-    if(secondBr){
-      break;
-    }
     for(var row = 0; row < myRow; row++) {
       console.log('arr['+row+','+col+'] is: ' + myArr[row][col]);
       if(myArr[row][col] != null){
@@ -100,13 +102,42 @@ function cryptoLogic(myCol, myRow, myArr){
         iter++;
       }else{
         console.log('Reached an unpopulated index of myArr at (' + col + ',' + row + ')!' );
-        secondBr = true;
-        break;
+        continue;
       }
     }
   }
   return output;
 };
+
+// function normalizeText(encryptStr, myCol, myRow){
+//   var answerStr = '';
+//   var inbounds = true;
+//   var val;
+//   var whtspc = ((myCol * myRow) - encryptStr.length);
+//   var colSpc = myCol - whtspc;
+//   console.log('WhiteSpace Amount: '+ whtspc);
+//   console.log(myCol);
+//   console.log(myRow);
+//   console.log(encryptStr.length);
+//   for(var j = 0; j < myRow; j++){
+//     for(var i = 0; i < myCol; i++){
+//       if(i <= colSpc){
+//         val = (i * myRow) + j;
+//         console.log(encryptStr[val]);
+//       }else{
+//         // if(j >= wtspc){
+//         //
+//         // }
+//          val = (i * (myRow - 1) + j);
+//          console.log(encryptStr[val]);
+//       }
+//       console.log(val);
+//       answerStr += encryptStr[val];
+//     }
+//   }
+//
+//   return answerStr;
+// };
 
 $(document).ready(function(){
   $('#myForm').submit(function(event){
