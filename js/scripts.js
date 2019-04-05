@@ -104,7 +104,7 @@ function cryptoLogic(myCol, myRow, myArr){
         output += myArr[row][col];
         iter++;
       }else{
-        console.log('Reached an unpopulated index of myArr at (' + col + ',' + row + ')!' );
+        console.log('Reached an unpopulated index of myArr at (' + row + ',' + col + ')!' );
         continue;
       }
     }
