@@ -1,3 +1,9 @@
 .centerWrap{
   text-align: center;
 }
+#optDecrypt{
+  display: none;
+}
+#myDecrypt{
+  display:none;
+}

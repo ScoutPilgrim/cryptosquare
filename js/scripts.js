@@ -1,6 +1,8 @@
 
 let answerStr = '';
 let normalStr = '';
+let globalCol;
+let globalRow;
 const regEx = /[.,\/#!$%\^&\*;:{}='"\-_`~()\]\[\?]/g;
 
 function clearArrays(){
@@ -8,6 +10,8 @@ function clearArrays(){
   inputStr = [];
   answerStr = '';
   normalStr = '';
+  globalCol = 0;
+  globalRow = 0;
 };
 
 function generateSquare(myLength, myStr){
@@ -24,14 +28,13 @@ function generateSquare(myLength, myStr){
     console.log('Number of Columns is ' + col);
     row = whichSq(col, myLength);
   }
+  globalCol = col;
+  globalRow = row;
   var mySquare = initArray(col, row, myStr);
   console.log(mySquare);
   printArray(col, row);
   answerStr = cryptoLogic(col, row, mySquare);
   console.log(answerStr);
-  normalStr = answerStr.replace(/\s/g,"");
-  normalStr = normalizeText(normalStr, col, row);
-  console.log('Text turned back into: ' +normalStr);
   return answerStr;
 };
 
@@ -109,35 +112,37 @@ function cryptoLogic(myCol, myRow, myArr){
   return output;
 };
 
-// function normalizeText(encryptStr, myCol, myRow){
-//   var answerStr = '';
-//   var inbounds = true;
-//   var val;
-//   var whtspc = ((myCol * myRow) - encryptStr.length);
-//   var colSpc = myCol - whtspc;
-//   console.log('WhiteSpace Amount: '+ whtspc);
-//   console.log(myCol);
-//   console.log(myRow);
-//   console.log(encryptStr.length);
-//   for(var j = 0; j < myRow; j++){
-//     for(var i = 0; i < myCol; i++){
-//       if(i <= colSpc){
-//         val = (i * myRow) + j;
-//         console.log(encryptStr[val]);
-//       }else{
-//         // if(j >= wtspc){
-//         //
-//         // }
-//          val = (i * (myRow - 1) + j);
-//          console.log(encryptStr[val]);
-//       }
-//       console.log(val);
-//       answerStr += encryptStr[val];
-//     }
-//   }
-//
-//   return answerStr;
-// };
+function normalizeText(encryptStr, myCol, myRow){
+  console.log('normalizeText is being called for the string '+encryptStr);
+  var answerStr = '';
+  var inbounds = true;
+  var val;
+  var edgeVal;
+  var whtspc = ((myCol * myRow) - encryptStr.length);
+  var colSpc = myCol - whtspc;
+  var iter;
+  console.log('WhiteSpace Amount: '+ whtspc);
+  for(var j = 0; j < myRow; j++){
+    if(j === myRow - 1){
+      colSpc--;
+    }
+    iter = 1;
+    for(var i = 0; i < myCol; i++){
+      if(i <= colSpc){
+        val = (i * myRow) + j;
+        console.log('Normal case for val is: ' + val);
+        answerStr += encryptStr[val];
+      }else if(j != myRow - 1){
+        console.log('iter is now: '+iter);
+        edgeVal = val + (myCol*iter);
+        iter++;
+        console.log('Special val case is: '+edgeVal);
+        answerStr += encryptStr[edgeVal];
+      }
+    }
+  }
+  return answerStr;
+};
 
 $(document).ready(function(){
   $('#myForm').submit(function(event){
@@ -153,5 +158,16 @@ $(document).ready(function(){
     len = inputStr.length;
     generateSquare(len, inputStr);
     $('#myAns p').text(answerStr);
+    $('#optDecrypt').show();
+  });
+  $('#optDecrypt').submit(function(event){
+    console.log('The user wants to decrypt their sentence!');
+    event.preventDefault();
+    normalStr = answerStr.replace(/\s/g,"");
+    console.log('normalStr being inputed is: '+normalStr);
+    normalStr = normalizeText(normalStr, globalCol, globalRow);
+    console.log('Text turned back into: ' +normalStr);
+    $('#myDecrypt').find('p').text(normalStr);
+    $('#myDecrypt').show();
   });
 });
